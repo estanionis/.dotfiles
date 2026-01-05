@@ -18,11 +18,11 @@ alias ll="ls -la"
 alias ..="cd .."
 
 # === DEVPOD FUNCTIONS ===
-# Creates a universal Microsoft devcontainer config with font support
+# Pilna DevSecOps aplinka: Cloud CLIs, IaC, Kubernetes ir Saugumo įrankiai
 devon() {
     mkdir -p .devcontainer
     echo '{
-    "name": "DevSecOps Universal Environment",
+    "name": "Full DevSecOps & Security Environment",
     "image": "mcr.microsoft.com/devcontainers/universal:latest",
     "features": {
         "ghcr.io/devcontainers/features/common-utils:1": {
@@ -30,7 +30,11 @@ devon() {
         },
         "ghcr.io/devcontainers/features/terraform:1": {},
         "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
-        "ghcr.io/devcontainers/features/docker-in-docker:1": {}
+        "ghcr.io/devcontainers/features/aws-cli:1": {},
+        "ghcr.io/devcontainers/features/azure-cli:1": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:1": {},
+        "ghcr.io/devcontainers-contrib/features/trivy:2": {},
+        "ghcr.io/devcontainers-contrib/features/snyk-cli:2": {}
     },
     "customizations": {
         "vscode": {
@@ -42,13 +46,16 @@ devon() {
                 "ms-kubernetes-tools.vscode-kubernetes-tools",
                 "hashicorp.terraform",
                 "redhat.ansible",
-                "tamasfe.even-better-toml"
+                "amazonwebservices.aws-toolkit-vscode",
+                "ms-vscode.azurecli",
+                "snyk-security.snyk-vscode",
+                "knqyf263.trivy-vulnerability-scanner"
             ]
         }
     },
-    "postCreateCommand": "curl -sS https://webinstall.dev/k9s | bash"
+    "postCreateCommand": "sh -c \"curl -sS https://webinstall.dev/k9s | bash && curl -sS https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && chmod +x /usr/local/bin/mc\""
 }' > .devcontainer/devcontainer.json
-    echo "✅ DevSecOps .devcontainer paruoštas (Terraform, Kubectl, Docker, k9s)"
+    echo "✅ DevSecOps paruoštas: Pridėti Trivy ir Snyk saugumo įrankiai"
 }
 
 # Deletes devcontainer config to keep the project clean
