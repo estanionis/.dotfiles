@@ -18,11 +18,11 @@ alias ll="ls -la"
 alias ..="cd .."
 
 # === DEVPOD FUNCTIONS ===
-# Pilna DevSecOps aplinka: Cloud CLIs, IaC, Kubernetes ir Saugumo įrankiai
+# Pilna DevSecOps aplinka su Cloud CLIs, Saugumo įrankiais ir Lazy TUI įrankiais
 devon() {
     mkdir -p .devcontainer
     echo '{
-    "name": "Full DevSecOps & Security Environment",
+    "name": "Ultimate DevSecOps & Lazy Environment",
     "image": "mcr.microsoft.com/devcontainers/universal:latest",
     "features": {
         "ghcr.io/devcontainers/features/common-utils:1": {
@@ -34,7 +34,9 @@ devon() {
         "ghcr.io/devcontainers/features/azure-cli:1": {},
         "ghcr.io/devcontainers/features/docker-in-docker:1": {},
         "ghcr.io/devcontainers-contrib/features/trivy:2": {},
-        "ghcr.io/devcontainers-contrib/features/snyk-cli:2": {}
+        "ghcr.io/devcontainers-contrib/features/snyk-cli:2": {},
+        "ghcr.io/devcontainers-contrib/features/lazygit:1": {},
+        "ghcr.io/devcontainers-contrib/features/lazydocker:1": {}
     },
     "customizations": {
         "vscode": {
@@ -49,13 +51,14 @@ devon() {
                 "amazonwebservices.aws-toolkit-vscode",
                 "ms-vscode.azurecli",
                 "snyk-security.snyk-vscode",
-                "knqyf263.trivy-vulnerability-scanner"
+                "knqyf263.trivy-vulnerability-scanner",
+                "asvetliakov.vscode-neovim"
             ]
         }
     },
-    "postCreateCommand": "sh -c \"curl -sS https://webinstall.dev/k9s | bash && curl -sS https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && chmod +x /usr/local/bin/mc\""
+    "postCreateCommand": "sh -c \"curl -sS https://webinstall.dev/k9s | bash && curl -sS https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && chmod +x /usr/local/bin/mc && ( [ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim || true )\""
 }' > .devcontainer/devcontainer.json
-    echo "✅ DevSecOps paruoštas: Pridėti Trivy ir Snyk saugumo įrankiai"
+    echo "✅ DevSecOps paruoštas: Pridėti Lazygit, Lazydocker ir LazyVim"
 }
 
 # Deletes devcontainer config to keep the project clean
