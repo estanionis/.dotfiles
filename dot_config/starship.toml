@@ -12,3 +12,9 @@ style = "bold purple"
 [directory]
 style = "bold blue"
 read_only = " 󰌾"
+
+[singularity]
+disabled = true
+
+[container]
+disabled = true
