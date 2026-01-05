@@ -1,4 +1,4 @@
-# A minimal and fast prompt
+# === STARSHIP CONFIG ===
 format = "$all"
 
 [character]
@@ -8,3 +8,7 @@ error_symbol = "[➜](bold red)"
 [git_branch]
 symbol = " "
 style = "bold purple"
+
+[directory]
+style = "bold blue"
+read_only = " 󰌾"
