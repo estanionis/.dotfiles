@@ -1,6 +1,8 @@
 # === UNIVERSAL SETTINGS ===
 alias ll="ls -la"
+alias ..="cd .."
 
+# === DEVPOD FUNCTIONS ===
 # Creates a universal Microsoft devcontainer config
 devon() {
     mkdir -p .devcontainer
@@ -11,24 +13,40 @@ devon() {
     echo "✅ .devcontainer ready (ignored by git)"
 }
 
-# Automatically sets the global ignore file
-git config --global core.excludesfile ~/.gitignore_global
-
-# Manual alias to resync git global ignore settings
-alias gsync="git config --global core.excludesfile ~/.gitignore_global && echo '✅ Git global ignore synced'"
-
 # Deletes devcontainer config to keep the project clean
 devoff() {
     rm -rf .devcontainer
     echo "🗑️   .devcontainer removed"
 }
 
+# === GIT CONFIGURATION ===
+# Automatically sets the global ignore file to ensure .devcontainer is never committed
+git config --global core.excludesfile ~/.gitignore_global
+
+# Manual alias to resync git global ignore settings
+alias gsync="git config --global core.excludesfile ~/.gitignore_global && echo '✅ Git global ignore synced'"
+
+# Deletes all stopped DevPod workspaces to free up space on 192.168.30.9
+alias dclean="devpod list | grep 'Exited' | awk '{print \$1}' | xargs -r devpod delete"
+
+# === DEVPOD TERMINAL COMMANDS ===
+# Quickly spin up the current folder in DevPod using your SSH provider
+alias dup="devpod up . --provider ssh"
+
+# List all running workspaces
+alias dls="devpod list"
+
+# Stop the current workspace (saves resources on 192.168.30.9)
+alias dstop="devpod stop"
+
+# Combined command: prepares environment AND starts DevPod
+devup() {
+    devon
+    devpod up . --provider ssh
+}
+
 # === MAC SPECIFIC SETTINGS ===
 {{- if eq .chezmoi.os "darwin" }}
-# Google Cloud SDK (Mac only)
-if [ -f '/Users/user/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/user/Downloads/google-cloud-sdk/path.zsh.inc'; fi
-if [ -f '/Users/user/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/user/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
-
 # Antigravity settings
 export PATH="/Users/user/.antigravity/antigravity/bin:$PATH"
 export PATH="/path/to/gemini-cli:$PATH"
@@ -36,5 +54,5 @@ export PATH="/path/to/gemini-cli:$PATH"
 
 # === LINUX / DEVPOD SPECIFIC SETTINGS ===
 {{- if eq .chezmoi.os "linux" }}
-# This section remains empty until you add specific Linux/DevPod settings
+# Add Linux-only aliases here (e.g., alias update="sudo apt update")
 {{- end }}
