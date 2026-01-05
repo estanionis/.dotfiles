@@ -22,22 +22,33 @@ alias ..="cd .."
 devon() {
     mkdir -p .devcontainer
     echo '{
-    "name": "Mano Universal Aplinka",
+    "name": "DevSecOps Universal Environment",
     "image": "mcr.microsoft.com/devcontainers/universal:latest",
     "features": {
         "ghcr.io/devcontainers/features/common-utils:1": {
             "configureZshAsDefaultShell": true
-        }
+        },
+        "ghcr.io/devcontainers/features/terraform:1": {},
+        "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:1": {}
     },
     "customizations": {
         "vscode": {
             "settings": {
                 "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font"
-            }
+            },
+            "extensions": [
+                "ms-azuretools.vscode-docker",
+                "ms-kubernetes-tools.vscode-kubernetes-tools",
+                "hashicorp.terraform",
+                "redhat.ansible",
+                "tamasfe.even-better-toml"
+            ]
         }
-    }
+    },
+    "postCreateCommand": "curl -sS https://webinstall.dev/k9s | bash"
 }' > .devcontainer/devcontainer.json
-    echo "✅ .devcontainer ready with auto-font configuration"
+    echo "✅ DevSecOps .devcontainer paruoštas (Terraform, Kubectl, Docker, k9s)"
 }
 
 # Deletes devcontainer config to keep the project clean
