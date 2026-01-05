@@ -1,12 +1,11 @@
 # === STARSHIP AUTOMATIC INSTALLATION ===
-# Checks if starship is installed, if not - installs it automatically
+# Ensures Starship is present in every environment (Mac, Linux, DevPod)
 if ! command -v starship &> /dev/null; then
     echo "🚀 Starship not found. Installing..."
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        # For MacBook Pro
         brew install starship &> /dev/null || curl -sS https://starship.rs/install.sh | sh -s -- -y
     else
-        # For Linux / DevPod / LXC
+        # For Linux/DevPod - installs to /usr/local/bin by default
         curl -sS https://starship.rs/install.sh | sh -s -- -y
     fi
 fi
@@ -19,14 +18,26 @@ alias ll="ls -la"
 alias ..="cd .."
 
 # === DEVPOD FUNCTIONS ===
-# Creates a universal Microsoft devcontainer config
+# Creates a universal Microsoft devcontainer config with font support
 devon() {
     mkdir -p .devcontainer
     echo '{
-    "name": "My Universal Environment",
-    "image": "mcr.microsoft.com/devcontainers/universal:latest"
+    "name": "Mano Universal Aplinka",
+    "image": "mcr.microsoft.com/devcontainers/universal:latest",
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:1": {
+            "configureZshAsDefaultShell": true
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font"
+            }
+        }
+    }
 }' > .devcontainer/devcontainer.json
-    echo "✅ .devcontainer ready (ignored by git)"
+    echo "✅ .devcontainer ready with auto-font configuration"
 }
 
 # Deletes devcontainer config to keep the project clean
@@ -36,14 +47,11 @@ devoff() {
 }
 
 # === GIT CONFIGURATION ===
-# Automatically sets the global ignore file to ensure .devcontainer is never committed
+# Automatically sets the global ignore file
 git config --global core.excludesfile ~/.gitignore_global
 
 # Manual alias to resync git global ignore settings
 alias gsync="git config --global core.excludesfile ~/.gitignore_global && echo '✅ Git global ignore synced'"
-
-# Deletes all stopped DevPod workspaces to free up space on server (192.168.30.9)
-alias dclean="devpod list | grep 'Exited' | awk '{print \$1}' | xargs -r devpod delete"
 
 # Pushes all chezmoi changes to GitHub with one command
 alias dpush="cd \$(chezmoi source-path) && git add . && git commit -m 'update' && git push && cd -"
@@ -51,12 +59,9 @@ alias dpush="cd \$(chezmoi source-path) && git add . && git commit -m 'update' &
 # === DEVPOD TERMINAL COMMANDS ===
 # Quickly spin up the current folder in DevPod using your SSH provider
 alias dup="devpod up . --provider ssh"
-
-# List all running workspaces
 alias dls="devpod list"
-
-# Stop the current workspace (saves resources on server)
 alias dstop="devpod stop"
+alias dclean="devpod list | grep 'Exited' | awk '{print \$1}' | xargs -r devpod delete"
 
 # Combined command: prepares environment AND starts DevPod
 devup() {
@@ -66,16 +71,16 @@ devup() {
 
 # === MAC SPECIFIC SETTINGS ===
 {{- if eq .chezmoi.os "darwin" }}
-# Antigravity settings
+# Antigravity & AI settings
 export PATH="/Users/user/.antigravity/antigravity/bin:$PATH"
 export PATH="/path/to/gemini-cli:$PATH"
 
-# Google Cloud SDK (Mac only)
+# Google Cloud SDK
 if [ -f '/Users/user/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/user/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 if [ -f '/Users/user/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/user/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 {{- end }}
 
 # === LINUX / DEVPOD SPECIFIC SETTINGS ===
 {{- if eq .chezmoi.os "linux" }}
-# Specific settings for LXC (192.168.30.9) or DevPod containers
+# Add specific Linux server tweaks here
 {{- end }}

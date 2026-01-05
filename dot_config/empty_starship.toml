@@ -1,10 +1,10 @@
-# Naudojamas "Pure" stiliaus pavyzdys
+# A minimal and fast prompt
 format = "$all"
 
 [character]
 success_symbol = "[➜](bold green)"
 error_symbol = "[➜](bold red)"
 
-[directory]
-truncation_length = 3
-style = "bold blue"
+[git_branch]
+symbol = " "
+style = "bold purple"
