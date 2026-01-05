@@ -1,32 +1,40 @@
-# === UNIVERSALŪS NUSTATYMAI ===
+# === UNIVERSAL SETTINGS ===
 alias ll="ls -la"
 
-# Sukuria universalų Microsoft devcontainer konfigą
+# Creates a universal Microsoft devcontainer config
 devon() {
     mkdir -p .devcontainer
     echo '{
-    "name": "Mano Universal Aplinka",
+    "name": "My Universal Environment",
     "image": "mcr.microsoft.com/devcontainers/universal:latest"
 }' > .devcontainer/devcontainer.json
-    echo "✅ .devcontainer paruoštas (ignoruojamas git)"
+    echo "✅ .devcontainer ready (ignored by git)"
 }
 
-# Ištrina devcontainer konfigą, kad projektas liktų švarus
+# Automatically sets the global ignore file
+git config --global core.excludesfile ~/.gitignore_global
+
+# Manual alias to resync git global ignore settings
+alias gsync="git config --global core.excludesfile ~/.gitignore_global && echo '✅ Git global ignore synced'"
+
+# Deletes devcontainer config to keep the project clean
 devoff() {
     rm -rf .devcontainer
-    echo "🗑️  .devcontainer pašalintas"
+    echo "🗑️   .devcontainer removed"
 }
 
-# === MAC SPECIFINIAI NUSTATYMAI ===
+# === MAC SPECIFIC SETTINGS ===
 {{- if eq .chezmoi.os "darwin" }}
+# Google Cloud SDK (Mac only)
+if [ -f '/Users/user/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/user/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f '/Users/user/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/user/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 
-# Antigravity nustatymai
+# Antigravity settings
 export PATH="/Users/user/.antigravity/antigravity/bin:$PATH"
 export PATH="/path/to/gemini-cli:$PATH"
 {{- end }}
 
-# === LINUX / DEVPOD SPECIFINIAI NUSTATYMAI ===
+# === LINUX / DEVPOD SPECIFIC SETTINGS ===
 {{- if eq .chezmoi.os "linux" }}
-# Čia bus tuščia, kol nesugalvosite ko nors specialaus Linux aplinkai
-
+# This section remains empty until you add specific Linux/DevPod settings
 {{- end }}
