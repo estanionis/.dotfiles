@@ -1,0 +1,15 @@
+# === UNIVERSALŪS NUSTATYMAI ===
+alias ll="ls -la"
+
+# === MAC SPECIFINIAI NUSTATYMAI ===
+{{- if eq .chezmoi.os "darwin" }}
+
+# Antigravity nustatymai
+export PATH="/Users/user/.antigravity/antigravity/bin:$PATH"
+export PATH="/path/to/gemini-cli:$PATH"
+{{- end }}
+
+# === LINUX / DEVPOD SPECIFINIAI NUSTATYMAI ===
+{{- if eq .chezmoi.os "linux" }}
+# Čia bus tuščia, kol nesugalvosite ko nors specialaus Linux aplinkai
+{{- end }}
