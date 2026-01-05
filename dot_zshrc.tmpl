@@ -1,6 +1,22 @@
 # === UNIVERSALŪS NUSTATYMAI ===
 alias ll="ls -la"
 
+# Sukuria universalų Microsoft devcontainer konfigą
+devon() {
+    mkdir -p .devcontainer
+    echo '{
+    "name": "Mano Universal Aplinka",
+    "image": "mcr.microsoft.com/devcontainers/universal:latest"
+}' > .devcontainer/devcontainer.json
+    echo "✅ .devcontainer paruoštas (ignoruojamas git)"
+}
+
+# Ištrina devcontainer konfigą, kad projektas liktų švarus
+devoff() {
+    rm -rf .devcontainer
+    echo "🗑️  .devcontainer pašalintas"
+}
+
 # === MAC SPECIFINIAI NUSTATYMAI ===
 {{- if eq .chezmoi.os "darwin" }}
 
@@ -12,4 +28,5 @@ export PATH="/path/to/gemini-cli:$PATH"
 # === LINUX / DEVPOD SPECIFINIAI NUSTATYMAI ===
 {{- if eq .chezmoi.os "linux" }}
 # Čia bus tuščia, kol nesugalvosite ko nors specialaus Linux aplinkai
+
 {{- end }}
