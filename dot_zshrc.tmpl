@@ -18,23 +18,26 @@ alias ll="ls -la"
 alias ..="cd .."
 
 # === DEVPOD FUNCTIONS ===
-# Pilna DevSecOps aplinka su Cloud CLIs, Saugumo įrankiais ir Lazy TUI įrankiais
+
+# Sukuria .devcontainer konfigūraciją (Noble + DinD v2 Fix)
 devon() {
     mkdir -p .devcontainer
     echo '{
-    "name": "Ultimate DevSecOps Environment",
+    "name": "Ultimate DevSecOps Noble Environment",
     "image": "mcr.microsoft.com/devcontainers/universal:latest",
     "features": {
         "ghcr.io/devcontainers/features/common-utils:1": {
             "configureZshAsDefaultShell": true
         },
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "moby": false
+        },
         "ghcr.io/devcontainers/features/terraform:1": {},
         "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
         "ghcr.io/devcontainers/features/aws-cli:1": {},
         "ghcr.io/devcontainers/features/azure-cli:1": {},
-        "ghcr.io/devcontainers/features/docker-in-docker:1": {
-            "moby": false
-        }
+        "ghcr.io/devcontainers-contrib/features/trivy:2": {},
+        "ghcr.io/devcontainers-contrib/features/snyk-cli:2": {}
     },
     "customizations": {
         "vscode": {
@@ -56,17 +59,28 @@ devon() {
     },
     "postCreateCommand": "sh -c \"curl -sS https://webinstall.dev/k9s | bash && curl -sS https://webinstall.dev/lazygit | bash && curl -sS https://webinstall.dev/lazydocker | bash && curl -sS https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && chmod +x /usr/local/bin/mc && ( [ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim || true )\""
 }' > .devcontainer/devcontainer.json
-    echo "✅ DevSecOps paruoštas"
+    echo "✅ DevSecOps paruoštas (Ubuntu 24.04 + DinD v2)"
 }
 
-# Deletes devcontainer config to keep the project clean
+# Ištrina tik vietinius konfigūracijos failus
 devoff() {
     rm -rf .devcontainer
-    echo "🗑️   .devcontainer removed"
+    echo "🗑️  Local .devcontainer removed"
 }
 
-# Pilnas išvalymas: ištrina vietinį aplanką ir workspace per DevPod CLI
-alias dclean="devoff && devpod delete $(basename $PWD) --force"
+# Pilnas išvalymas: ištrina vietinius failus IR workspace serveryje
+dclean() {
+    devoff
+    local ws_name=$(basename "$PWD")
+    echo "⏳ Deleting DevPod workspace: $ws_name..."
+    devpod delete "$ws_name" --force
+}
+
+# Pakelia aplinką (prieš tai išvalius senus bandymus)
+devup() {
+    devon
+    devpod up .
+}
 
 # === GIT CONFIGURATION ===
 # Automatically sets the global ignore file
