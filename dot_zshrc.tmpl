@@ -69,6 +69,9 @@ devoff() {
     echo "🗑️   .devcontainer removed"
 }
 
+# Pilnas išvalymas: ištrina vietinį aplanką ir workspace per DevPod CLI
+alias dclean="devoff && devpod delete $(basename $PWD) --force"
+
 # === GIT CONFIGURATION ===
 # Automatically sets the global ignore file
 git config --global core.excludesfile ~/.gitignore_global
