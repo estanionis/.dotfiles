@@ -20,10 +20,10 @@ alias lg="lazygit"
 alias lz="lazygit"
 alias lzd="lazydocker"
 
-# === DEVPOD GALUTINĖ FUNKCIJA ===
+# === DEVPOD FINAL FUNCTION (Refactored) ===
 devon() {
     mkdir -p .devcontainer
-    # Naudojame 'EOF', kad kintamieji nebūtų interpretuojami Mac'o shell'e
+    # Using 'EOF' to prevent variable expansion in the local shell
     cat <<'INNEREOF' > .devcontainer/devcontainer.json
 {
     "name": "Ultimate DevSecOps Environment",
@@ -58,10 +58,11 @@ devon() {
             ]
         }
     },
-    "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2t64 libxtst6 xauth xvfb && curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.tar.gz && sudo rm -rf /opt/nvim && sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz && sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim && sudo npm install -g snyk && curl -sS https://webinstall.dev/k9s | bash && LAZYGIT_VERSION=$(curl -s \"https://api.github.com/repos/jesseduffield/lazygit/releases/latest\" | grep -Po '\"tag_name\": \"v\\K[0-9.]+') && curl -Lo lazygit.tar.gz \"https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz\" && sudo tar xf lazygit.tar.gz lazygit -C /usr/local/bin/ && rm lazygit.tar.gz && curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash && sudo mv ~/.local/bin/lazydocker /usr/local/bin/ && curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && sudo curl -sL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && sudo chmod +x /usr/local/bin/mc && ( [ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim || true ) && sh -c \"$(curl -fsLS get.chezmoi.io)\" -- init --apply estanionis/.dotfiles"
+    // The magic happens here: chezmoi init --apply runs the run_onchange script!
+    "postCreateCommand": "sh -c \"$(curl -fsLS get.chezmoi.io)\" -- init --apply estanionis/.dotfiles"
 }
 INNEREOF
-    echo "✅ DevSecOps paruoštas (su pataisytu JSON)"
+    echo "✅ DevSecOps config generated (delegated to chezmoi)"
 }
 
 devoff() {
@@ -69,7 +70,7 @@ devoff() {
     echo "🗑️  Local .devcontainer removed"
 }
 
-# Updated dclean to be robust: doesn't fail if workspace is already gone
+# Robust dclean
 dclean() {
     devoff
     local ws_name=$(basename "$PWD")
@@ -92,7 +93,6 @@ alias dpush="cd \$(chezmoi source-path) && git add . && git commit -m 'update' &
 alias dup="devpod up . --provider ssh"
 alias dls="devpod list"
 alias dstop="devpod stop"
-# Renamed from dclean to dprune to avoid conflict with dclean function
 alias dprune="devpod list | grep 'Exited' | awk '{print \$1}' | xargs -r devpod delete"
 
 # Combined command: prepares environment AND starts DevPod

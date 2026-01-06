@@ -1,0 +1,74 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/bash
+set -euo pipefail
+
+echo "⚙️  Running DevContainer setup via Chezmoi..."
+
+# 1. System Dependencies (Cypress/Puppeteer/General)
+# Only run apt-get if we are root or have sudo and apt-get exists
+if command -v apt-get &> /dev/null; then
+    echo "📦 Installing system dependencies..."
+    sudo apt-get update
+    sudo apt-get install -y \
+        libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev \
+        libnss3 libxss1 libasound2t64 libxtst6 xauth xvfb \
+        curl unzip tar git
+fi
+
+# 2. Neovim Nightly (for LazyVim)
+if ! command -v nvim &> /dev/null; then
+    echo "📦 Installing Neovim Nightly..."
+    curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.tar.gz
+    sudo rm -rf /opt/nvim
+    sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
+    sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
+    rm nvim-linux-x86_64.tar.gz
+fi
+
+# 3. Lazygit (Fixed version)
+if ! command -v lazygit &> /dev/null; then
+    echo "📦 Installing Lazygit..."
+    curl -Lo lazygit.tar.gz https://github.com/jesseduffield/lazygit/releases/download/v0.58.0/lazygit_0.58.0_Linux_x86_64.tar.gz
+    sudo tar xf lazygit.tar.gz lazygit -C /usr/local/bin/
+    rm lazygit.tar.gz
+fi
+
+# 4. Lazydocker (Fixed version)
+if ! command -v lazydocker &> /dev/null; then
+    echo "📦 Installing Lazydocker..."
+    curl -Lo lazydocker.tar.gz https://github.com/jesseduffield/lazydocker/releases/download/v0.24.3/lazydocker_0.24.3_Linux_x86_64.tar.gz
+    sudo tar xf lazydocker.tar.gz lazydocker -C /usr/local/bin/
+    rm lazydocker.tar.gz
+fi
+
+# 5. NPM Global Packages (Snyk, Tree-sitter for Neovim)
+if command -v npm &> /dev/null; then
+    echo "📦 Installing Global NPM packages..."
+    sudo npm install -g snyk tree-sitter-cli
+fi
+
+# 6. K9s, Trivy, MC
+if ! command -v k9s &> /dev/null; then
+    echo "📦 Installing K9s..."
+    curl -sS https://webinstall.dev/k9s | bash
+fi
+
+if ! command -v trivy &> /dev/null; then
+    echo "📦 Installing Trivy..."
+    curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
+fi
+
+if ! command -v mc &> /dev/null; then
+    echo "📦 Installing MinIO Client..."
+    sudo curl -sL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc
+    sudo chmod +x /usr/local/bin/mc
+fi
+
+# 7. LazyVim Config (Clone if not exists)
+if [ ! -d "$HOME/.config/nvim" ]; then
+    echo "⚙️  Cloning LazyVim starter..."
+    git clone https://github.com/LazyVim/starter "$HOME/.config/nvim"
+fi
+
+echo "✅ DevContainer setup complete!"
+{{ end -}}
