@@ -32,7 +32,9 @@ devon() {
         "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
         "ghcr.io/devcontainers/features/aws-cli:1": {},
         "ghcr.io/devcontainers/features/azure-cli:1": {},
-        "ghcr.io/devcontainers/features/docker-in-docker:1": {},
+        "ghcr.io/devcontainers/features/docker-in-docker:1": {
+	    "moby": false
+	},
         "ghcr.io/devcontainers-contrib/features/trivy:2": {},
         "ghcr.io/devcontainers-contrib/features/snyk-cli:2": {},
         "ghcr.io/devcontainers-contrib/features/lazygit:1": {},
@@ -58,7 +60,7 @@ devon() {
     },
     "postCreateCommand": "sh -c \"curl -sS https://webinstall.dev/k9s | bash && curl -sS https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && chmod +x /usr/local/bin/mc && ( [ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim || true )\""
 }' > .devcontainer/devcontainer.json
-    echo "✅ DevSecOps paruoštas: Pridėti Lazygit, Lazydocker ir LazyVim"
+    echo "✅ DevSecOps paruoštas"
 }
 
 # Deletes devcontainer config to keep the project clean
