@@ -18,12 +18,10 @@ alias ll="ls -la"
 alias ..="cd .."
 
 # === DEVPOD FUNCTIONS ===
-
-# Sukuria .devcontainer konfigūraciją (Noble + DinD v2 Fix)
 devon() {
     mkdir -p .devcontainer
     echo '{
-    "name": "Ultimate DevSecOps Noble Environment",
+    "name": "Ultimate DevSecOps Environment",
     "image": "mcr.microsoft.com/devcontainers/universal:latest",
     "features": {
         "ghcr.io/devcontainers/features/common-utils:1": {
@@ -35,9 +33,7 @@ devon() {
         "ghcr.io/devcontainers/features/terraform:1": {},
         "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
         "ghcr.io/devcontainers/features/aws-cli:1": {},
-        "ghcr.io/devcontainers/features/azure-cli:1": {},
-        "ghcr.io/devcontainers-contrib/features/trivy:2": {},
-        "ghcr.io/devcontainers-contrib/features/snyk-cli:2": {}
+        "ghcr.io/devcontainers/features/azure-cli:1": {}
     },
     "customizations": {
         "vscode": {
@@ -57,18 +53,17 @@ devon() {
             ]
         }
     },
-    "postCreateCommand": "sh -c \"curl -sS https://webinstall.dev/k9s | bash && curl -sS https://webinstall.dev/lazygit | bash && curl -sS https://webinstall.dev/lazydocker | bash && curl -sS https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && chmod +x /usr/local/bin/mc && ( [ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim || true )\""
+    "postCreateCommand": "sh -c \"curl -sS https://webinstall.dev/k9s | bash && curl -sS https://webinstall.dev/lazygit | bash && curl -sS https://webinstall.dev/lazydocker | bash && curl -sS https://webinstall.dev/snyk | bash && curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin && curl -sS https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && chmod +x /usr/local/bin/mc && ( [ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim || true )\""
 }' > .devcontainer/devcontainer.json
-    echo "✅ DevSecOps paruoštas (Ubuntu 24.04 + DinD v2)"
+    echo "✅ DevSecOps paruoštas (Visi įrankiai per postCreate)"
 }
 
-# Ištrina tik vietinius konfigūracijos failus
 devoff() {
     rm -rf .devcontainer
     echo "🗑️  Local .devcontainer removed"
 }
 
-# Pilnas išvalymas: ištrina vietinius failus IR workspace serveryje
+# Pilnas išvalymas (Funkcija vietoj aliaso)
 dclean() {
     devoff
     local ws_name=$(basename "$PWD")
@@ -76,7 +71,6 @@ dclean() {
     devpod delete "$ws_name" --force
 }
 
-# Pakelia aplinką (prieš tai išvalius senus bandymus)
 devup() {
     devon
     devpod up .
