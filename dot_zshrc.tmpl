@@ -18,10 +18,11 @@ alias ll="ls -la"
 alias ..="cd .."
 
 # === DEVPOD FUNCTIONS ===
+
 devon() {
     mkdir -p .devcontainer
     echo '{
-    "name": "Ultimate DevSecOps Environment",
+    "name": "Ultimate DevSecOps Noble Environment",
     "image": "mcr.microsoft.com/devcontainers/universal:latest",
     "features": {
         "ghcr.io/devcontainers/features/common-utils:1": {
@@ -53,9 +54,9 @@ devon() {
             ]
         }
     },
-    "postCreateCommand": "sh -c \"curl -sS https://webinstall.dev/k9s | bash && curl -sS https://webinstall.dev/lazygit | bash && curl -sS https://webinstall.dev/lazydocker | bash && curl -sS https://webinstall.dev/snyk | bash && curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin && curl -sS https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && chmod +x /usr/local/bin/mc && ( [ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim || true )\""
+    "postCreateCommand": "sh -c \"curl -sS https://webinstall.dev/k9s | bash && sudo npm install -g snyk && curl -sS https://raw.githubusercontent.com/jesseduffield/lazygit/master/scripts/install_update_linux.sh | bash && curl -sS https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash && curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && sudo curl -sS https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && sudo chmod +x /usr/local/bin/mc && ( [ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim || true )\""
 }' > .devcontainer/devcontainer.json
-    echo "✅ DevSecOps paruoštas (Visi įrankiai per postCreate)"
+    echo "✅ DevSecOps paruoštas (su sudo ir official scripts)"
 }
 
 devoff() {
@@ -63,7 +64,6 @@ devoff() {
     echo "🗑️  Local .devcontainer removed"
 }
 
-# Pilnas išvalymas (Funkcija vietoj aliaso)
 dclean() {
     devoff
     local ws_name=$(basename "$PWD")
