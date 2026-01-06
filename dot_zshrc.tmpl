@@ -21,7 +21,7 @@ alias ..="cd .."
 devon() {
     mkdir -p .devcontainer
     echo '{
-    "name": "Ultimate DevSecOps Noble Environment",
+    "name": "Ultimate DevSecOps Environment",
     "image": "mcr.microsoft.com/devcontainers/universal:latest",
     "features": {
         "ghcr.io/devcontainers/features/common-utils:1": {
@@ -53,9 +53,9 @@ devon() {
             ]
         }
     },
-    "postCreateCommand": "sh -c \"curl -sS https://webinstall.dev/k9s | bash && sudo npm install -g snyk && curl -sfL https://raw.githubusercontent.com/jesseduffield/lazygit/master/scripts/install_update_linux.sh | bash && curl -sfL https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash && curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && sudo curl -sL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && sudo chmod +x /usr/local/bin/mc && ( [ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim || true )\""
+    "postCreateCommand": "sh -c \"curl -sS https://webinstall.dev/k9s | bash && sudo npm install -g snyk && curl -sfL https://raw.githubusercontent.com/jesseduffield/lazygit/master/scripts/install_update_linux.sh | bash && curl -sfL https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash && curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && sudo curl -sL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && sudo chmod +x /usr/local/bin/mc && ( [ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim || true ) && sh -c \"$(curl -fsLS get.chezmoi.io)\" -- init --apply estanionis/.dotfiles""
 }' > .devcontainer/devcontainer.json
-    echo "✅ DevSecOps paruoštas (Stabilus diegimas)"
+    echo "✅ DevSecOps paruoštas (su Dotfiles auto-setup)"
 }
 
 devoff() {
