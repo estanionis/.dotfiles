@@ -17,8 +17,7 @@ eval "$(starship init zsh)"
 alias ll="ls -la"
 alias ..="cd .."
 
-# === DEVPOD FUNCTIONS ===
-
+# === DEVPOD GALUTINĖ FUNKCIJA ===
 devon() {
     mkdir -p .devcontainer
     echo '{
@@ -54,9 +53,9 @@ devon() {
             ]
         }
     },
-    "postCreateCommand": "sh -c \"curl -sS https://webinstall.dev/k9s | bash && sudo npm install -g snyk && curl -sS https://raw.githubusercontent.com/jesseduffield/lazygit/master/scripts/install_update_linux.sh | bash && curl -sS https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash && curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && sudo curl -sS https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && sudo chmod +x /usr/local/bin/mc && ( [ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim || true )\""
+    "postCreateCommand": "sh -c \"curl -sS https://webinstall.dev/k9s | bash && sudo npm install -g snyk && curl -sfL https://raw.githubusercontent.com/jesseduffield/lazygit/master/scripts/install_update_linux.sh | bash && curl -sfL https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash && curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && sudo curl -sL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && sudo chmod +x /usr/local/bin/mc && ( [ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim || true )\""
 }' > .devcontainer/devcontainer.json
-    echo "✅ DevSecOps paruoštas (su sudo ir official scripts)"
+    echo "✅ DevSecOps paruoštas (Stabilus diegimas)"
 }
 
 devoff() {
