@@ -20,7 +20,9 @@ alias ..="cd .."
 # === DEVPOD GALUTINĖ FUNKCIJA ===
 devon() {
     mkdir -p .devcontainer
-    echo '{
+    # Naudojame 'EOF', kad kintamieji nebūtų interpretuojami Mac'o shell'e
+    cat <<'INNEREOF' > .devcontainer/devcontainer.json
+{
     "name": "Ultimate DevSecOps Environment",
     "image": "mcr.microsoft.com/devcontainers/universal:latest",
     "features": {
@@ -53,9 +55,10 @@ devon() {
             ]
         }
     },
-    "postCreateCommand": "sh -c \"curl -sS https://webinstall.dev/k9s | bash && sudo npm install -g snyk && curl -sfL https://raw.githubusercontent.com/jesseduffield/lazygit/master/scripts/install_update_linux.sh | bash && curl -sfL https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash && curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && sudo curl -sL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && sudo chmod +x /usr/local/bin/mc && ( [ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim || true ) && sh -c \"$(curl -fsLS get.chezmoi.io)\" -- init --apply estanionis/.dotfiles""
-}' > .devcontainer/devcontainer.json
-    echo "✅ DevSecOps paruoštas (su Dotfiles auto-setup)"
+    "postCreateCommand": "sudo npm install -g snyk && curl -sS https://webinstall.dev/k9s | bash && curl -sfL https://raw.githubusercontent.com/jesseduffield/lazygit/master/scripts/install_update_linux.sh | bash && curl -sfL https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash && curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin && sudo curl -sL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc && sudo chmod +x /usr/local/bin/mc && ( [ ! -d ~/.config/nvim ] && git clone https://github.com/LazyVim/starter ~/.config/nvim || true ) && sh -c \"$(curl -fsLS get.chezmoi.io)\" -- init --apply estanionis/.dotfiles"
+}
+INNEREOF
+    echo "✅ DevSecOps paruoštas (su pataisytu JSON)"
 }
 
 devoff() {
@@ -68,11 +71,6 @@ dclean() {
     local ws_name=$(basename "$PWD")
     echo "⏳ Deleting DevPod workspace: $ws_name..."
     devpod delete "$ws_name" --force
-}
-
-devup() {
-    devon
-    devpod up .
 }
 
 # === GIT CONFIGURATION ===
@@ -90,7 +88,8 @@ alias dpush="cd \$(chezmoi source-path) && git add . && git commit -m 'update' &
 alias dup="devpod up . --provider ssh"
 alias dls="devpod list"
 alias dstop="devpod stop"
-alias dclean="devpod list | grep 'Exited' | awk '{print \$1}' | xargs -r devpod delete"
+# Renamed from dclean to dprune to avoid conflict with dclean function
+alias dprune="devpod list | grep 'Exited' | awk '{print \$1}' | xargs -r devpod delete"
 
 # Combined command: prepares environment AND starts DevPod
 devup() {
